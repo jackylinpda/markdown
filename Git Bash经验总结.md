@@ -19,10 +19,19 @@ git push origin master
 
 1. 编辑.bashrc实现自动切换目录及添加常用命令快捷方式：
 ```bash
-vi ~/bash.rc
+vi ~/.bashrc
 cd /e/markdown/
 alias ve='source ~/ENV3.6/Scripts/activate'
 alias de='deactivate'
 ```
 
+1. 使用sh脚本实现一键式提交修改到远程库
+只需要新建一个upload.sh文件，内容如下，后续直接调用即可，如：
+./upload.sh 增加github技巧
+```bash
+#!/bin/bash
+git add .
+git commit -m "$1"
+git push origin master
+```
 
