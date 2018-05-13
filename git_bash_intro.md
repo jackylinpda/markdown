@@ -26,8 +26,8 @@ alias de='deactivate'
 ```
 
 1. 使用sh脚本实现一键式提交修改到远程库
-只需要新建一个upload.sh文件，内容如下，后续直接调用即可，如：
-./upload.sh 增加github技巧
+只需要新建一个upfile.sh文件，内容如下，后续直接调用即可，如：
+./upfile.sh 增加github技巧
 ```bash
 #!/bin/bash
 git add .
