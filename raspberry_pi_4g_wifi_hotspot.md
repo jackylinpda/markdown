@@ -76,7 +76,9 @@ python /home/pi/4g_dial.py
 ```
 
 拔号后使用ifconfig命令查看eth1端口状态，如果有inet 10.XX.XX.XX的IP地址出现，则拔号成功，再用ping命令测试外网能否ping通。
+
 ![ifconfig](./pic/raspberry_pi_4g_wifi_hotspot/ifconfig.png)
+
 ![ping](./pic/raspberry_pi_4g_wifi_hotspot/ping.png)
 
 ## WIFI热点搭建
@@ -87,13 +89,13 @@ WIFI热点搭建只需要配置好hostapd即可，但我想让树莓派同时支
 sudo apt-get install dnsmasq hostapd bridge-utils
 ```
 
-1. 添加网桥：
+2. 添加网桥：
 ```bash
 sudo brctl addbr br-lan
 sudo brctl addif br-lan eth0
 ```
 
-1. 因为Stretch默认使用dhcpcd.conf配置网络，但hostapd只识别/etc/network/interfaces中的网络配置，因此需要修改dhcpd.conf，禁止对wlan0/eth0/eth1进行配置：
+3. 因为Stretch默认使用dhcpcd.conf配置网络，但hostapd只识别/etc/network/interfaces中的网络配置，因此需要修改dhcpd.conf，禁止对wlan0/eth0/eth1进行配置：
 ```bash
 sudo vi /etc/dhcpcd.conf
 ```
@@ -105,7 +107,7 @@ denyinterfaces eth0
 denyinterfaces eth1
 ```
 
-1. 对/etc/network/interfaces进行配置：
+4. 对/etc/network/interfaces进行配置：
 ```bash
 sudo vi /etc/network/interfaces
 ```
@@ -124,7 +126,7 @@ address 192.168.0.1
 netmask 255.255.255.0
 ```
 
-1. 新增/etc/hostapd/hostapd.conf配置，内容如下：
+5. 新增/etc/hostapd/hostapd.conf配置，内容如下：
 ```bash
 sudo vi /etc/hostapd/hostapd.conf
 ```
@@ -163,7 +165,7 @@ wpa_passphrase=youpassword
 rsn_pairwise=CCMP
 ```
 
-1. 修改/etc/default/hostapd，指定配置文件：
+6. 修改/etc/default/hostapd，指定配置文件：
 ```bash
 sudo vi /etc/default/hostapd
 ```
@@ -171,7 +173,7 @@ sudo vi /etc/default/hostapd
 DAEMON_CONF="/etc/hostapd/hostapd.conf"
 ```
 
-1. 修改/etc/dnsmasq.conf，指定需要DHCP服务的网络接口、分配的IP地址范围和更新时间：
+7. 修改/etc/dnsmasq.conf，指定需要DHCP服务的网络接口、分配的IP地址范围和更新时间：
 ```bash
 sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.orig
 sudo vi /etc/dnsmasq.conf
@@ -185,7 +187,7 @@ bogus-priv
 dhcp-range=192.168.0.100,192.168.0.200,255.255.255.0,24h
 ```
 
-1. 修改/etc/sysctl.conf，允许IP转发：
+8. 修改/etc/sysctl.conf，允许IP转发：
 ```bash
 sudo vi /etc/sysctl.conf
 ```
@@ -194,7 +196,7 @@ sudo vi /etc/sysctl.conf
 net.ipv4.ip_forward=1
 ```
 
-1. 添加防火墙配置，将发往eth1的数据进行NAT转换：
+9. 添加防火墙配置，将发往eth1的数据进行NAT转换：
 ```bash
 sudo iptables -t nat -A  POSTROUTING -o eth1 -j MASQUERADE
 sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
